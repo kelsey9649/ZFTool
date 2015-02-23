@@ -91,6 +91,30 @@ class CreateController extends AbstractActionController
         $console->writeLine("For more info in $path/README.md");
     }
 
+    public function ciAction()
+    {
+        $console = $this->getServiceLocator()->get('console');
+        $tmpDir  = sys_get_temp_dir();
+        $request = $this->getRequest();
+        $path    = rtrim($request->getParam('path'), '/');
+
+        //Sanity checks. Make sure the directory is a Zend application container
+        if (file_exists($path)) {
+            return $this->sendError (
+                "The directory does not exist. I can't configure something that doesn't exist."
+            );
+        }
+
+        if(!file_exists($path.'/config') || !file_exists($path.'/module') || !file_exists($path.'/public')) {
+            return $this->sendError (
+                "Are you sure this directory is a Zend application container?"
+            );
+        }
+
+
+
+    }
+
     public function controllerAction()
     {
         $console = $this->getServiceLocator()->get('console');

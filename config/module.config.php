@@ -90,6 +90,15 @@ return array(
                         ),
                     ),
                 ),
+                'zftool-create-ci-config' => array(
+                    'options' => array(
+                        'route'    => 'create ci-config <path>',
+                        'defaults' => array(
+                            'controller' => 'ZFTool\Controller\Create',
+                            'action'     => 'ci',
+                        ),
+                    ),
+                ),
                 'zftool-create-module' => array(
                     'options' => array(
                         'route'    => 'create module <name> [<path>]',
