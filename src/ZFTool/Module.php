@@ -77,8 +77,8 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
             array('<path>', 'The path of the project to be created'),
 
             'CI configuration creation:',
-            'create ci-config <path>'     => 'create CI configuration for project at <path>',
-            array('<path>', 'The path of the project to create the CI config for'),
+            'create ci-config <path>'     => 'create CI configuration for a project or module at <path>',
+            array('<path>', 'The path of the project or module to create the CI config for'),
 
             'Module creation:',
             'create module <name> [<path>]'     => 'create a module',

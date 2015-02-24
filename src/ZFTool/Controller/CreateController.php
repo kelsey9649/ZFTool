@@ -98,21 +98,87 @@ class CreateController extends AbstractActionController
         $request = $this->getRequest();
         $path    = rtrim($request->getParam('path'), '/');
 
+        $moduleName = explode('/',$path);
+        $moduleName = $moduleName[sizeof($moduleName)-1];
+
+        $projectName = strtolower(preg_replace('/(?<=[a-z])([A-Z]+)/', '-$1', $moduleName));
+
+//        echo $moduleName."\n";
+//        echo $projectName."\n";
+
         //Sanity checks. Make sure the directory is a Zend application container
-        if (file_exists($path)) {
+        if (!file_exists($path)) {
             return $this->sendError (
                 "The directory does not exist. I can't configure something that doesn't exist."
             );
         }
 
-        if(!file_exists($path.'/config') || !file_exists($path.'/module') || !file_exists($path.'/public')) {
+        if((!file_exists($path.'/config') || !file_exists($path.'/module') || !file_exists($path.'/public')) &&
+                (!file_exists($path.'/config') || !file_exists($path.'/src') || !file_exists($path.'/view'))) {
             return $this->sendError (
-                "Are you sure this directory is a Zend application container?"
+                "Are you sure this directory is a Zend application container or module?"
             );
         }
 
+        if (!file_exists($path.'/build')) {
+            mkdir($path.'/build', 0777, true);
+        }
 
+        if (!file_exists($path.'/tests')) {
+            mkdir($path.'/tests', 0777, true);
+        }
 
+        $templatePath = dirname(__FILE__).'/../template';
+
+        // build.xml
+        $buildXmlContent = file_get_contents($templatePath.'/build.xml.tpl.dist');
+        $buildXmlContent = str_replace('{projectName}', $projectName, $buildXmlContent);
+
+        if (!file_exists($path.'/build.xml')) {
+            file_put_contents($path.'/build.xml', $buildXmlContent);
+        }
+
+        // .gitignore
+        $gitignoreContent = file_get_contents($templatePath.'/.gitignore.tpl.dist');
+
+        if (!file_exists($path.'/.gitignore')) {
+            file_put_contents($path.'/.gitignore', $gitignoreContent);
+        }
+
+        // phpdox.xml
+        $phpdoxXmlContent = file_get_contents($templatePath.'/build/phpdox.xml.tpl.dist');
+        $phpdoxXmlContent = str_replace('{projectName}', $projectName, $phpdoxXmlContent);
+
+        if (!file_exists($path.'/build/phpdox.xml')) {
+            file_put_contents($path.'/build/phpdox.xml', $phpdoxXmlContent);
+        }
+
+        // phpmd.xml
+        $phpmdXmlContent = file_get_contents($templatePath.'/build/phpmd.xml.tpl.dist');
+
+        if (!file_exists($path.'/build/phpmd.xml')) {
+            file_put_contents($path.'/build/phpmd.xml', $phpmdXmlContent);
+        }
+
+        // Bootstrap.php
+        $bootstrapContent = file_get_contents($templatePath.'/tests/Bootstrap.tpl.dist');
+        $bootstrapContent = str_replace('{projectName}', $projectName, $bootstrapContent);
+        $bootstrapContent = str_replace('{moduleName}', $moduleName, $bootstrapContent);
+        $bootstrapContent = str_replace('{namespace}', $moduleName, $bootstrapContent);
+
+        if (!file_exists($path.'/tests/Bootstrap.php')) {
+            file_put_contents($path.'/tests/Bootstrap.php', $bootstrapContent);
+        }
+
+        // phpunit.xml
+        $phpunitXmlContent = file_get_contents($templatePath.'/tests/phpunit.xml.tpl.dist');
+        $phpunitXmlContent = str_replace('{projectName}', $projectName, $phpunitXmlContent);
+        $phpunitXmlContent = str_replace('{moduleName}', $moduleName, $phpunitXmlContent);
+        $phpunitXmlContent = str_replace('{namespace}', $moduleName, $phpunitXmlContent);
+
+        if (!file_exists($path.'/tests/phpunit.xml')) {
+            file_put_contents($path.'/tests/phpunit.xml', $phpunitXmlContent);
+        }
     }
 
     public function controllerAction()
