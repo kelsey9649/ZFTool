@@ -26,13 +26,13 @@ $phar = new \Phar($pharPath, 0, $filename);
 $phar->startBuffering();
 
 // remove the first line in zf.php
-$phar->addFromString('zf.php', substr(php_strip_whitespace("$srcRoot/zf.php"), 19));
-$phar->addFromString('Module.php', php_strip_whitespace("$srcRoot/Module.php"));
+$phar->addFromString('zf.php', substr(php_strip_whitespace("{$srcRoot}zf.php"), 19));
+$phar->addFromString('Module.php', php_strip_whitespace("{$srcRoot}Module.php"));
 
-addDir($phar, "$srcRoot/vendor", $srcRoot);
-addDir($phar, "$srcRoot/config", $srcRoot);
-addDir($phar, "$srcRoot/src", $srcRoot);
-addDir($phar, "$srcRoot/view", $srcRoot);
+addDir($phar, "{$srcRoot}vendor", $srcRoot);
+addDir($phar, "{$srcRoot}config", $srcRoot);
+addDir($phar, "{$srcRoot}src", $srcRoot);
+addDir($phar, "{$srcRoot}view", $srcRoot);
 
 $stub = <<<EOF
 #!/usr/bin/env php
