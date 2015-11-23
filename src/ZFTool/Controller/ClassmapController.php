@@ -3,14 +3,9 @@
 namespace ZFTool\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\Stdlib\ArrayUtils;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\View\Model\ConsoleModel;
 use Zend\File\ClassFileLocator;
-use Zend\Loader\StandardAutoloader;
 use Zend\Console\ColorInterface as Color;
-use Zend\Version;
 
 
 class ClassmapController extends AbstractActionController
@@ -189,7 +184,9 @@ class ClassmapController extends AbstractActionController
             $maxWidth = max($maxWidth, strlen($match[1]));
         }
 
-        $content = preg_replace('(\n\s+([^=]+)=>)e', "'\n    \\1' . str_repeat(' ', " . $maxWidth . " - strlen('\\1')) . '=>'", $content);
+        $content = preg_replace_callback('(\n\s+([^=]+)=>)', function ($match) use ($maxWidth) {
+            return "\n    " . $match[1] . str_repeat(' ', $maxWidth - strlen($match[1])) . '=>';
+        }, $content);
 
         if (!$usingStdout) {
             $console->writeLine(" DONE" . PHP_EOL, Color::GREEN);
@@ -206,6 +203,4 @@ class ClassmapController extends AbstractActionController
             $console->writeLine('Wrote classmap to ' . realpath($output), Color::LIGHT_WHITE);
         }
     }
-
-
 }

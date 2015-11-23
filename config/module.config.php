@@ -9,7 +9,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'ZFTool\Controller\Info'        => 'ZFTool\Controller\InfoController',
-            'ZFTool\Controller\Config'        => 'ZFTool\Controller\ConfigController',
+            'ZFTool\Controller\Config'      => 'ZFTool\Controller\ConfigController',
             'ZFTool\Controller\Module'      => 'ZFTool\Controller\ModuleController',
             'ZFTool\Controller\Classmap'    => 'ZFTool\Controller\ClassmapController',
             'ZFTool\Controller\Create'      => 'ZFTool\Controller\CreateController',
@@ -137,7 +137,7 @@ return array(
                 ),
                 'zftool-diagnostics' => array(
                     'options' => array(
-                        'route'    => '(diagnostics|diag) [-v|--verbose]:verbose [--debug] [-q|--quiet]:quiet [-b|--break]:break [<testGroupName>]',
+                        'route'    => '(diagnostics|diag) [-v|--verbose]:verbose [--debug] [-q|--quiet]:quiet [-b|--break]:break [<filter>]',
                         'defaults' => array(
                             'controller' => 'ZFTool\Controller\Diagnostics',
                             'action'     => 'run',
@@ -150,7 +150,7 @@ return array(
 
     'diagnostics' => array(
         'ZF' => array(
-            'PHP Version' => array('ZFTool\Diagnostics\Test\PhpVersion', '5.3.3'),
+            'PHP Version' => array('PhpVersion', '5.3.3'),
         )
     )
 );
